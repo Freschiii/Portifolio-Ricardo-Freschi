@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Menu, X, Camera, Mail, Phone, Instagram, Sun, Moon, ChevronLeft, ChevronRight, Aperture } from 'lucide-react'
+import { Menu, X, Camera, Mail, Phone, Instagram, Sun, Moon, ChevronLeft, ChevronRight, Aperture, ZoomIn, ZoomOut, RotateCcw, Move } from 'lucide-react'
 import { Button } from '@/components/ui/button.jsx'
 import './App.css'
 
@@ -346,6 +346,64 @@ function HomePage({ setCurrentPage, isDarkMode, onImageClick, backgroundImages, 
   }
 
   const [randomImages] = useState(() => getRandomImages())
+  const [selectedImageForLightbox, setSelectedImageForLightbox] = useState(null)
+  const [zoomLevel, setZoomLevel] = useState(1)
+  const [imagePosition, setImagePosition] = useState({ x: 0, y: 0 })
+  const [isDragging, setIsDragging] = useState(false)
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0 })
+
+  // Funções de zoom para HomePage
+  const handleImageClick = (image) => {
+    setSelectedImageForLightbox(image)
+  }
+
+  const closeLightbox = () => {
+    setSelectedImageForLightbox(null)
+    setZoomLevel(1)
+    setImagePosition({ x: 0, y: 0 })
+  }
+
+  const handleZoomIn = () => {
+    setZoomLevel(prev => Math.min(prev + 0.5, 3))
+  }
+
+  const handleZoomOut = () => {
+    setZoomLevel(prev => Math.max(prev - 0.5, 0.5))
+  }
+
+  const resetZoom = () => {
+    setZoomLevel(1)
+    setImagePosition({ x: 0, y: 0 })
+  }
+
+  const handleMouseDown = (e) => {
+    if (zoomLevel > 1) {
+      setIsDragging(true)
+      setDragStart({ x: e.clientX - imagePosition.x, y: e.clientY - imagePosition.y })
+    }
+  }
+
+  const handleMouseMove = (e) => {
+    if (isDragging && zoomLevel > 1) {
+      setImagePosition({
+        x: e.clientX - dragStart.x,
+        y: e.clientY - dragStart.y
+      })
+    }
+  }
+
+  const handleMouseUp = () => {
+    setIsDragging(false)
+  }
+
+  const handleWheel = (e) => {
+    e.preventDefault()
+    if (e.deltaY < 0) {
+      handleZoomIn()
+    } else {
+      handleZoomOut()
+    }
+  }
 
   return (
     <div className={`min-h-screen transition-colors duration-300 ${isDarkMode ? '' : 'bg-white'}`} style={isDarkMode ? { backgroundColor: '#0F1217' } : {}}>
@@ -406,7 +464,7 @@ function HomePage({ setCurrentPage, isDarkMode, onImageClick, backgroundImages, 
               <div
                 key={index}
                 className="relative group cursor-pointer overflow-hidden rounded-lg shadow-lg"
-                onClick={() => onImageClick(image)}
+                onClick={() => handleImageClick(image)}
               >
                 <img
                   src={image.src}
@@ -473,6 +531,94 @@ function HomePage({ setCurrentPage, isDarkMode, onImageClick, backgroundImages, 
           </motion.div>
         </div>
       </section>
+
+      {/* Lightbox para HomePage */}
+      <AnimatePresence>
+        {selectedImageForLightbox && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center p-4"
+            onClick={closeLightbox}
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUp}
+            onWheel={handleWheel}
+          >
+            <motion.img
+              initial={{ scale: 0.8 }}
+              animate={{ scale: zoomLevel }}
+              exit={{ scale: 0.8 }}
+              src={selectedImageForLightbox.src}
+              alt={selectedImageForLightbox.alt}
+              className="max-w-[95vw] max-h-[95vh] w-auto h-auto object-contain cursor-move"
+              style={{ 
+                imageRendering: 'high-quality',
+                imageRendering: '-webkit-optimize-contrast',
+                transform: `translate(${imagePosition.x}px, ${imagePosition.y}px)`,
+                transition: isDragging ? 'none' : 'transform 0.2s ease-out'
+              }}
+              onClick={(e) => e.stopPropagation()}
+              onMouseDown={handleMouseDown}
+            />
+            
+            {/* Controles de zoom */}
+            <div className="absolute top-4 left-4 flex gap-2">
+              <button
+                onClick={(e) => {
+                  e.stopPropagation()
+                  handleZoomIn()
+                }}
+                className="text-white hover:text-gray-300 bg-black/50 rounded-full p-2 transition-colors duration-200"
+                title="Zoom In"
+              >
+                <ZoomIn className="h-6 w-6" />
+              </button>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation()
+                  handleZoomOut()
+                }}
+                className="text-white hover:text-gray-300 bg-black/50 rounded-full p-2 transition-colors duration-200"
+                title="Zoom Out"
+              >
+                <ZoomOut className="h-6 w-6" />
+              </button>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation()
+                  resetZoom()
+                }}
+                className="text-white hover:text-gray-300 bg-black/50 rounded-full p-2 transition-colors duration-200"
+                title="Reset Zoom"
+              >
+                <RotateCcw className="h-6 w-6" />
+              </button>
+            </div>
+
+            {/* Indicador de zoom */}
+            <div className="absolute top-4 left-1/2 transform -translate-x-1/2 bg-black/50 text-white px-3 py-1 rounded-full text-sm">
+              {Math.round(zoomLevel * 100)}%
+            </div>
+
+            {/* Botão de fechar */}
+            <button
+              onClick={closeLightbox}
+              className="absolute top-4 right-4 text-white hover:text-gray-300 bg-black/50 rounded-full p-2 transition-colors duration-200"
+            >
+              <X className="h-8 w-8" />
+            </button>
+
+            {/* Instruções */}
+            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black/50 text-white px-4 py-2 rounded-lg text-sm text-center">
+              <div className="flex items-center gap-2">
+                <Move className="h-4 w-4" />
+                <span>Arraste para mover • Scroll para zoom</span>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   )
 }
@@ -481,6 +627,10 @@ function GalleryPage({ isDarkMode, selectedImage }) {
   const [currentPage, setCurrentPage] = useState(1)
   const [selectedImageForLightbox, setSelectedImageForLightbox] = useState(null)
   const [slideDirection, setSlideDirection] = useState(0) // 0: initial, 1: right, -1: left
+  const [zoomLevel, setZoomLevel] = useState(1)
+  const [imagePosition, setImagePosition] = useState({ x: 0, y: 0 })
+  const [isDragging, setIsDragging] = useState(false)
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0 })
   const imagesPerPage = 12 // Número de imagens por página (aumentado de 9 para 12)
 
   // Calcula o índice inicial e final das imagens para a página atual
@@ -527,6 +677,53 @@ function GalleryPage({ isDarkMode, selectedImage }) {
   // Função para fechar o lightbox e limpar o estado
   const closeLightbox = () => {
     setSelectedImageForLightbox(null)
+    setZoomLevel(1)
+    setImagePosition({ x: 0, y: 0 })
+  }
+
+  // Funções de zoom
+  const handleZoomIn = () => {
+    setZoomLevel(prev => Math.min(prev + 0.5, 3))
+  }
+
+  const handleZoomOut = () => {
+    setZoomLevel(prev => Math.max(prev - 0.5, 0.5))
+  }
+
+  const resetZoom = () => {
+    setZoomLevel(1)
+    setImagePosition({ x: 0, y: 0 })
+  }
+
+  // Funções de arrastar
+  const handleMouseDown = (e) => {
+    if (zoomLevel > 1) {
+      setIsDragging(true)
+      setDragStart({ x: e.clientX - imagePosition.x, y: e.clientY - imagePosition.y })
+    }
+  }
+
+  const handleMouseMove = (e) => {
+    if (isDragging && zoomLevel > 1) {
+      setImagePosition({
+        x: e.clientX - dragStart.x,
+        y: e.clientY - dragStart.y
+      })
+    }
+  }
+
+  const handleMouseUp = () => {
+    setIsDragging(false)
+  }
+
+  // Função para zoom com scroll
+  const handleWheel = (e) => {
+    e.preventDefault()
+    if (e.deltaY < 0) {
+      handleZoomIn()
+    } else {
+      handleZoomOut()
+    }
   }
 
   return (
@@ -654,26 +851,81 @@ function GalleryPage({ isDarkMode, selectedImage }) {
               exit={{ opacity: 0 }}
               className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center p-4"
               onClick={closeLightbox}
+              onMouseMove={handleMouseMove}
+              onMouseUp={handleMouseUp}
+              onWheel={handleWheel}
             >
               <motion.img
                 initial={{ scale: 0.8 }}
-                animate={{ scale: 1 }}
+                animate={{ scale: zoomLevel }}
                 exit={{ scale: 0.8 }}
                 src={selectedImageForLightbox.src}
                 alt={selectedImageForLightbox.alt}
-                className="max-w-[95vw] max-h-[95vh] w-auto h-auto object-contain"
+                className="max-w-[95vw] max-h-[95vh] w-auto h-auto object-contain cursor-move"
                 style={{ 
                   imageRendering: 'high-quality',
-                  imageRendering: '-webkit-optimize-contrast'
+                  imageRendering: '-webkit-optimize-contrast',
+                  transform: `translate(${imagePosition.x}px, ${imagePosition.y}px)`,
+                  transition: isDragging ? 'none' : 'transform 0.2s ease-out'
                 }}
                 onClick={(e) => e.stopPropagation()}
+                onMouseDown={handleMouseDown}
               />
+              
+              {/* Controles de zoom */}
+              <div className="absolute top-4 left-4 flex gap-2">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    handleZoomIn()
+                  }}
+                  className="text-white hover:text-gray-300 bg-black/50 rounded-full p-2 transition-colors duration-200"
+                  title="Zoom In"
+                >
+                  <ZoomIn className="h-6 w-6" />
+                </button>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    handleZoomOut()
+                  }}
+                  className="text-white hover:text-gray-300 bg-black/50 rounded-full p-2 transition-colors duration-200"
+                  title="Zoom Out"
+                >
+                  <ZoomOut className="h-6 w-6" />
+                </button>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    resetZoom()
+                  }}
+                  className="text-white hover:text-gray-300 bg-black/50 rounded-full p-2 transition-colors duration-200"
+                  title="Reset Zoom"
+                >
+                  <RotateCcw className="h-6 w-6" />
+                </button>
+              </div>
+
+              {/* Indicador de zoom */}
+              <div className="absolute top-4 left-1/2 transform -translate-x-1/2 bg-black/50 text-white px-3 py-1 rounded-full text-sm">
+                {Math.round(zoomLevel * 100)}%
+              </div>
+
+              {/* Botão de fechar */}
               <button
                 onClick={closeLightbox}
                 className="absolute top-4 right-4 text-white hover:text-gray-300 bg-black/50 rounded-full p-2 transition-colors duration-200"
               >
                 <X className="h-8 w-8" />
               </button>
+
+              {/* Instruções */}
+              <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black/50 text-white px-4 py-2 rounded-lg text-sm text-center">
+                <div className="flex items-center gap-2">
+                  <Move className="h-4 w-4" />
+                  <span>Arraste para mover • Scroll para zoom</span>
+                </div>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
