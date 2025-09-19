@@ -167,15 +167,14 @@ function generateGalleryImages() {
       name: imageName
     })
   })
-  
-  // Ordena as imagens: primeiro por categoria, depois por nome
-  return galleryImages.sort((a, b) => {
-    if (a.category !== b.category) {
-      const categoryOrder = ['retratos', 'eventos', 'grupos', 'paisagens']
-      return categoryOrder.indexOf(a.category) - categoryOrder.indexOf(b.category)
-    }
-    return a.name.localeCompare(b.name)
-  })
+  // Embaralha as imagens para ordem aleatória (Fisher-Yates)
+  for (let i = galleryImages.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    const tmp = galleryImages[i]
+    galleryImages[i] = galleryImages[j]
+    galleryImages[j] = tmp
+  }
+  return galleryImages
 }
 
 // Gera a galeria dinamicamente
