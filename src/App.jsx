@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+andaimport { useState, useEffect } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Menu, X, Camera, Mail, Phone, Instagram, Sun, Moon, ChevronLeft, ChevronRight, Aperture } from 'lucide-react'
@@ -289,7 +289,7 @@ function Navigation({ currentPage, setCurrentPage, isDarkMode, toggleDarkMode })
               }`}
             >
               <div className="py-2">
-                {['home', 'galeria', 'contato', 'projetos'].map((page, index) => (
+                {['home', 'galeria', 'contato', 'projetos', 'curriculo'].map((page, index) => (
                   <motion.button
                     key={page}
                     initial={{ opacity: 0, x: -20 }}
@@ -1018,6 +1018,208 @@ function ContactPage({ isDarkMode, biographyImages, currentBiographyIndex }) {
   )
 }
 
+// Componente da página de currículo
+function ResumePage({ isDarkMode }) {
+  const themedBgStyle = isDarkMode 
+    ? { background: 'linear-gradient(135deg, #0F1217 0%, #1a1d24 50%, #0F1217 100%)' }
+    : { background: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #f8fafc 100%)' }
+
+  const handleDownloadResume = () => {
+    // Criar um link temporário para download
+    const link = document.createElement('a')
+    link.href = '/curriculo-ricardo-freschi.pdf' // Você precisará adicionar este arquivo
+    link.download = 'Curriculo-Ricardo-Freschi.pdf'
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+  }
+
+  return (
+    <div className={`min-h-screen py-20 px-4 transition-colors duration-300`} style={themedBgStyle}>
+      <div className="max-w-4xl mx-auto">
+        <motion.div 
+          className="text-center mb-16"
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+        >
+          <h1 className={`text-4xl md:text-5xl font-bold mb-4 ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
+            Currículo
+          </h1>
+          <p className={`text-lg ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+            Conheça minha trajetória profissional
+          </p>
+        </motion.div>
+
+        <div className={`rounded-2xl p-8 shadow-2xl ${isDarkMode ? 'bg-gray-900/50 border border-gray-700' : 'bg-white/80 border border-gray-200'}`}>
+          {/* Informações Pessoais */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="mb-8"
+          >
+            <h2 className={`text-2xl font-bold mb-4 ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
+              Ricardo Freschi
+            </h2>
+            <p className={`text-lg mb-2 ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+              Fotógrafo Profissional
+            </p>
+            <div className="space-y-2">
+              <p className={`flex items-center ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                <Mail className="w-4 h-4 mr-2" />
+                ricardo.freschi@email.com
+              </p>
+              <p className={`flex items-center ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                <Phone className="w-4 h-4 mr-2" />
+                (11) 99999-9999
+              </p>
+              <p className={`flex items-center ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                <Instagram className="w-4 h-4 mr-2" />
+                @ricardofreschi
+              </p>
+            </div>
+          </motion.div>
+
+          {/* Resumo Profissional */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="mb-8"
+          >
+            <h3 className={`text-xl font-bold mb-3 ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
+              Resumo Profissional
+            </h3>
+            <p className={`${isDarkMode ? 'text-gray-300' : 'text-gray-600'} leading-relaxed`}>
+              Fotógrafo profissional com mais de 10 anos de experiência em fotografia de eventos, 
+              retratos e projetos comerciais. Especializado em capturar momentos únicos e contar 
+              histórias através da lente, com foco em qualidade técnica e criatividade artística.
+            </p>
+          </motion.div>
+
+          {/* Experiência Profissional */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+            className="mb-8"
+          >
+            <h3 className={`text-xl font-bold mb-4 ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
+              Experiência Profissional
+            </h3>
+            <div className="space-y-4">
+              <div className={`p-4 rounded-lg ${isDarkMode ? 'bg-gray-800/50' : 'bg-gray-50'}`}>
+                <h4 className={`font-semibold ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
+                  Fotógrafo Freelancer
+                </h4>
+                <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                  2015 - Presente
+                </p>
+                <p className={`mt-2 ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                  Desenvolvimento de projetos fotográficos diversos, incluindo eventos corporativos, 
+                  casamentos, ensaios fotográficos e projetos comerciais.
+                </p>
+              </div>
+              <div className={`p-4 rounded-lg ${isDarkMode ? 'bg-gray-800/50' : 'bg-gray-50'}`}>
+                <h4 className={`font-semibold ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
+                  Fotógrafo - Estúdio XYZ
+                </h4>
+                <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                  2012 - 2015
+                </p>
+                <p className={`mt-2 ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                  Responsável por sessões de fotos, edição e pós-produção. Trabalho em equipe 
+                  para desenvolvimento de campanhas publicitárias.
+                </p>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Habilidades */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.5 }}
+            className="mb-8"
+          >
+            <h3 className={`text-xl font-bold mb-4 ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
+              Habilidades Técnicas
+            </h3>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+              {[
+                'Fotografia de Eventos',
+                'Retratos',
+                'Fotografia Comercial',
+                'Edição Digital',
+                'Lightroom',
+                'Photoshop',
+                'Fotografia de Casamentos',
+                'Ensaios Fotográficos',
+                'Pós-produção'
+              ].map((skill, index) => (
+                <span
+                  key={index}
+                  className={`px-3 py-2 rounded-full text-sm font-medium ${
+                    isDarkMode 
+                      ? 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/30' 
+                      : 'bg-indigo-100 text-indigo-700 border border-indigo-200'
+                  }`}
+                >
+                  {skill}
+                </span>
+              ))}
+            </div>
+          </motion.div>
+
+          {/* Educação */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.6 }}
+            className="mb-8"
+          >
+            <h3 className={`text-xl font-bold mb-4 ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
+              Educação
+            </h3>
+            <div className={`p-4 rounded-lg ${isDarkMode ? 'bg-gray-800/50' : 'bg-gray-50'}`}>
+              <h4 className={`font-semibold ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
+                Curso de Fotografia Profissional
+              </h4>
+              <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                Escola de Fotografia ABC - 2010-2012
+              </p>
+              <p className={`mt-2 ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                Formação completa em técnicas fotográficas, iluminação, composição e pós-produção.
+              </p>
+            </div>
+          </motion.div>
+
+          {/* Botão de Download */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.7 }}
+            className="text-center"
+          >
+            <button
+              onClick={handleDownloadResume}
+              className={`inline-flex items-center px-8 py-4 rounded-lg text-lg font-medium transition-all duration-200 ${
+                isDarkMode 
+                  ? 'bg-white hover:bg-gray-200 text-gray-900' 
+                  : 'bg-gray-800 hover:bg-gray-700 text-white'
+              }`}
+            >
+              <Camera className="w-5 h-5 mr-2" />
+              Baixar Currículo PDF
+            </button>
+          </motion.div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 function App() {
   const [currentPage, setCurrentPage] = useState('home')
   const [selectedImageForGallery, setSelectedImageForGallery] = useState(null)
@@ -1093,6 +1295,8 @@ function App() {
         return <ProjectsPage isDarkMode={isDarkMode} />
       case 'contato':
         return <ContactPage isDarkMode={isDarkMode} biographyImages={biographyImages} currentBiographyIndex={currentBiographyIndex} />
+      case 'curriculo':
+        return <ResumePage isDarkMode={isDarkMode} />
       default:
         return <HomePage setCurrentPage={handlePageChange} isDarkMode={isDarkMode} onImageClick={handleImageClick} />
     }
