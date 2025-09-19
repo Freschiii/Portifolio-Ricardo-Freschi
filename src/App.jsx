@@ -686,6 +686,20 @@ function ProjectsPage({ isDarkMode }) {
   // Dados vindos dos .txt na pasta de projetos
   const projects = importProjectTexts()
   
+  // Imagem de fundo para o card do TikTok
+  // Coloque o arquivo em: src/assets/projects/friday-night-club/friday-bg.(jpg|png)
+  const tiktokBg = (() => {
+    try {
+      const modules = import.meta.glob('./assets/projects/friday-night-club/*.{jpg,jpeg,png}', { eager: true })
+      const first = Object.values(modules)[0]
+      // Vite retorna o módulo com .default
+      // @ts-ignore
+      return first ? first.default : null
+    } catch {
+      return null
+    }
+  })()
+  
   // Extrai o ID do YouTube (suporta youtu.be, youtube.com/watch?v=, e shorts)
   const getYouTubeId = (url) => {
     if (!url) return ''
@@ -735,6 +749,7 @@ function ProjectsPage({ isDarkMode }) {
           {projects.map((project, index) => {
             const ytId = getYouTubeId(project.videoUrl)
             const hasYouTube = Boolean(ytId)
+            const isTikTok = Boolean(project.videoUrl && project.videoUrl.includes('tiktok.com'))
             const thumbnail = hasYouTube ? `https://i.ytimg.com/vi/${ytId}/hqdefault.jpg` : ''
 
             return (
@@ -743,7 +758,7 @@ function ProjectsPage({ isDarkMode }) {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
-                className={`rounded-2xl overflow-hidden shadow-xl ${cardClasses}`}
+                className={`group rounded-2xl overflow-hidden shadow-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl ${cardClasses} hover:border-indigo-400/30`}
               >
                 {/* Área do Vídeo / Thumbnail */}
                 <div className="relative aspect-video bg-black">
@@ -761,28 +776,37 @@ function ProjectsPage({ isDarkMode }) {
                       <img
                         src={thumbnail}
                         alt={project.title}
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                         loading="lazy"
                       />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center">
-                        <div className={`w-16 h-16 rounded-full flex items-center justify-center ${isDarkMode ? 'bg-slate-700' : 'bg-indigo-200'}`}>
-                          <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M8 5v10l8-5-8-5z"/>
-                          </svg>
-                        </div>
-                      </div>
+                      <>
+                        {isTikTok && tiktokBg ? (
+                          <img
+                            src={tiktokBg}
+                            alt={project.title}
+                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                            style={{ objectPosition: 'center 35%' }}
+                            loading="lazy"
+                          />
+                        ) : (
+                          <div className="w-full h-full bg-gradient-to-br from-indigo-900 via-indigo-800 to-slate-900" />
+                        )}
+                      </>
                     )}
-
-                    {/* Overlay + Play */}
-                    <div className="absolute inset-0 bg-black/30 group-hover:bg-black/20 transition-colors duration-300" />
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div className={`w-16 h-16 rounded-full flex items-center justify-center transition-all duration-300 group-hover:scale-105 ${isDarkMode ? 'bg-black/50' : 'bg-black/40'}`}>
-                        <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
-                          <path d="M8 5v10l8-5-8-5z"/>
-                        </svg>
-                      </div>
-                    </div>
+                    {hasYouTube && (
+                      <>
+                        {/* Overlay + Play */}
+                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300" />
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <div className={`w-16 h-16 rounded-full flex items-center justify-center transition-all duration-300 group-hover:scale-110 ${isDarkMode ? 'bg-black/50' : 'bg-black/40'}`}>
+                            <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
+                              <path d="M8 5v10l8-5-8-5z"/>
+                            </svg>
+                          </div>
+                        </div>
+                      </>
+                    )}
                   </button>
                 </div>
 
@@ -792,14 +816,14 @@ function ProjectsPage({ isDarkMode }) {
                     {project.title}
                   </h3>
 
-                  {project.role || project.year ? (
+                  {project.role || (project.year && !isTikTok) ? (
                     <div className="flex items-center gap-3 mb-3">
                       {project.role && (
                         <span className={`text-xs font-medium px-3 py-1 rounded-full ${isDarkMode ? 'bg-indigo-500/30 text-indigo-200' : 'bg-indigo-100 text-indigo-700'}`}>
                           {project.role}
                         </span>
                       )}
-                      {project.year && (
+                      {project.year && !isTikTok && (
                         <span className={`text-xs ${subText}`}>
                           {project.year}
                         </span>
@@ -828,7 +852,7 @@ function ProjectsPage({ isDarkMode }) {
                         rel="noreferrer"
                         className={`${neutralBtn} rounded-lg py-2 px-3 text-sm font-medium text-center transition-colors`}
                       >
-                        Abrir no YouTube
+                        {isTikTok ? 'Abrir no TikTok' : hasYouTube ? 'Abrir no YouTube' : 'Abrir projeto'}
                       </a>
                     </div>
                   )}
