@@ -1,7 +1,7 @@
-andaimport { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Menu, X, Camera, Mail, Phone, Instagram, Sun, Moon, ChevronLeft, ChevronRight, Aperture } from 'lucide-react'
+import { Menu, X, Camera, Mail, Phone, Instagram, Sun, Moon, ChevronLeft, ChevronRight, Aperture, Palette, Video, Image, Music, Mic, Headphones, Zap, Copy, Check, PhoneCall, User, CameraIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button.jsx'
 import './App.css'
 
@@ -219,7 +219,7 @@ function Navigation({ currentPage, setCurrentPage, isDarkMode, toggleDarkMode })
 
           {/* Right group: home/galeria/contato + dark toggle (desktop) */}
           <div className="hidden md:flex items-center space-x-8">
-            {['home', 'galeria', 'contato'].map((page) => (
+            {['home', 'galeria', 'contato', 'curriculo'].map((page) => (
               <button
                 key={page}
                 onClick={() => setCurrentPage(page)}
@@ -1019,16 +1019,33 @@ function ContactPage({ isDarkMode, biographyImages, currentBiographyIndex }) {
 }
 
 // Componente da página de currículo
-function ResumePage({ isDarkMode }) {
+function ResumePage({ isDarkMode, biographyImages, currentBiographyIndex }) {
+  const [emailCopied, setEmailCopied] = useState(false)
+  
   const themedBgStyle = isDarkMode 
     ? { background: 'linear-gradient(135deg, #0F1217 0%, #1a1d24 50%, #0F1217 100%)' }
     : { background: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #f8fafc 100%)' }
 
+  const handleCopyEmail = async () => {
+    try {
+      await navigator.clipboard.writeText('ricardodias2004@gmail.com')
+      setEmailCopied(true)
+      setTimeout(() => setEmailCopied(false), 2000)
+    } catch (err) {
+      console.error('Erro ao copiar email:', err)
+    }
+  }
+
+  const handleCall = () => {
+    window.open('tel:+5511957798732', '_self')
+  }
+
   const handleDownloadResume = () => {
     // Criar um link temporário para download
     const link = document.createElement('a')
-    link.href = '/curriculo-ricardo-freschi.pdf' // Você precisará adicionar este arquivo
-    link.download = 'Curriculo-Ricardo-Freschi.pdf'
+    link.href = './curriculo-ricardo-freschi.pdf'
+    link.download = 'Curriculo-Ricardo-Freschi-2025.pdf'
+    link.target = '_blank'
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
@@ -1051,128 +1068,242 @@ function ResumePage({ isDarkMode }) {
           </p>
         </motion.div>
 
-        <div className={`rounded-2xl p-8 shadow-2xl ${isDarkMode ? 'bg-gray-900/50 border border-gray-700' : 'bg-white/80 border border-gray-200'}`}>
-          {/* Informações Pessoais */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="mb-8"
-          >
-            <h2 className={`text-2xl font-bold mb-4 ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
-              Ricardo Freschi
-            </h2>
-            <p className={`text-lg mb-2 ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-              Fotógrafo Profissional
-            </p>
-            <div className="space-y-2">
-              <p className={`flex items-center ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                <Mail className="w-4 h-4 mr-2" />
-                ricardo.freschi@email.com
-              </p>
-              <p className={`flex items-center ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                <Phone className="w-4 h-4 mr-2" />
-                (11) 99999-9999
-              </p>
-              <p className={`flex items-center ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                <Instagram className="w-4 h-4 mr-2" />
-                @ricardofreschi
-              </p>
+                <div className={`rounded-2xl p-8 shadow-2xl backdrop-blur-sm ${isDarkMode ? 'bg-gradient-to-br from-gray-900/80 via-gray-800/60 to-gray-900/80 border border-gray-700/50' : 'bg-gradient-to-br from-white/90 via-gray-50/80 to-white/90 border border-gray-200/50'}`}>
+          {/* Layout de duas colunas */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            {/* Coluna esquerda - Informações */}
+            <div className="space-y-6">
+              {/* Informações Pessoais */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+              >
+                <motion.h2 
+                  className={`text-3xl font-bold mb-4 bg-gradient-to-r ${isDarkMode ? 'from-white via-gray-200 to-white bg-clip-text text-transparent' : 'from-gray-800 via-gray-600 to-gray-800 bg-clip-text text-transparent'}`}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 1, delay: 0.5 }}
+                >
+                  <motion.span
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8, delay: 0.7 }}
+                  >
+                    RICARDO
+                  </motion.span>
+                  <motion.span
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8, delay: 1 }}
+                    className="ml-2"
+                  >
+                    FRESCHI
+                  </motion.span>
+                </motion.h2>
+                <p className={`text-lg mb-2 ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                  Estudante de Rádio, TV e Internet
+                </p>
+                <div className="space-y-2">
+                  <motion.div 
+                    className={`flex items-center justify-between ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}
+                    whileHover={{ scale: 1.02 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <motion.div 
+                      className="flex items-center cursor-pointer"
+                      onClick={handleCopyEmail}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <Mail className="w-4 h-4 mr-2 text-blue-400" />
+                      <span className={`${isDarkMode ? 'text-gray-300' : 'text-gray-600'} hover:text-blue-400 transition-colors duration-200`}>
+                        ricardodias2004@gmail.com
+                      </span>
+                    </motion.div>
+                    <button
+                      onClick={handleCopyEmail}
+                      className={`ml-2 p-1 rounded transition-colors duration-200 ${
+                        emailCopied 
+                          ? 'text-green-400' 
+                          : isDarkMode 
+                            ? 'text-gray-400 hover:text-blue-400' 
+                            : 'text-gray-500 hover:text-blue-500'
+                      }`}
+                      title={emailCopied ? 'Email copiado!' : 'Copiar email'}
+                    >
+                      {emailCopied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                    </button>
+                  </motion.div>
+                  <div className={`flex items-center justify-between ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                    <div className="flex items-center">
+                      <Phone className="w-4 h-4 mr-2 text-green-400" />
+                      (11) 95779-8732
+                    </div>
+                    <motion.button
+                      onClick={handleCall}
+                      className={`ml-2 p-1 rounded transition-colors duration-200 md:hidden ${
+                        isDarkMode 
+                          ? 'text-gray-400 hover:text-green-400' 
+                          : 'text-gray-500 hover:text-green-500'
+                      }`}
+                      title="Ligar"
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.9 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <PhoneCall className="w-4 h-4" />
+                    </motion.button>
+                  </div>
+                  <div className={`flex items-center gap-4 ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                    <div className="flex items-center">
+                      <Instagram className="w-4 h-4 mr-2 text-pink-400" />
+                      <span className="text-sm font-medium">Redes Sociais</span>
+                    </div>
+                    <div className="flex gap-2">
+                      <motion.a 
+                        href="https://instagram.com/freschi.raw" 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className={`px-3 py-1 rounded-full text-sm font-medium transition-all duration-300 hover:scale-105 flex items-center gap-2 ${
+                          isDarkMode
+                            ? 'bg-gradient-to-r from-pink-500/20 via-purple-500/20 to-orange-500/20 text-pink-300 border border-pink-500/30 hover:from-pink-500/30 hover:via-purple-500/30 hover:to-orange-500/30 hover:border-pink-400/50'
+                            : 'bg-gradient-to-r from-pink-500/20 via-purple-500/20 to-orange-500/20 text-pink-700 border border-pink-500/30 hover:from-pink-500/30 hover:via-purple-500/30 hover:to-orange-500/30 hover:border-pink-400/50'
+                        }`}
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        transition={{ duration: 0.2 }}
+                        title="Fotografias"
+                      >
+                        <CameraIcon className="w-4 h-4" />
+                        <span className="font-semibold">@freschi.raw</span>
+                      </motion.a>
+                      <motion.a 
+                        href="https://instagram.com/freschi.jpg" 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className={`px-3 py-1 rounded-full text-sm font-medium transition-all duration-300 hover:scale-105 flex items-center gap-2 ${
+                          isDarkMode
+                            ? 'bg-gradient-to-r from-pink-500/20 via-purple-500/20 to-orange-500/20 text-pink-300 border border-pink-500/30 hover:from-pink-500/30 hover:via-purple-500/30 hover:to-orange-500/30 hover:border-pink-400/50'
+                            : 'bg-gradient-to-r from-pink-500/20 via-purple-500/20 to-orange-500/20 text-pink-700 border border-pink-500/30 hover:from-pink-500/30 hover:via-purple-500/30 hover:to-orange-500/30 hover:border-pink-400/50'
+                        }`}
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        transition={{ duration: 0.2 }}
+                        title="Pessoal"
+                      >
+                        <User className="w-4 h-4" />
+                        <span className="font-semibold">@freschi.jpg</span>
+                      </motion.a>
+                    </div>
+                  </div>
+                  <p className={`flex items-center ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                    <span className="w-4 h-4 mr-2 text-red-400">📍</span>
+                    Rua Barão de Tatuí, 594 - Vila Buarque
+                  </p>
+                </div>
+              </motion.div>
+
+              {/* Resumo Profissional */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.3 }}
+              >
+                <h3 className={`text-xl font-bold mb-3 ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
+                  Resumo Profissional
+                </h3>
+                <p className={`${isDarkMode ? 'text-gray-300' : 'text-gray-600'} leading-relaxed`}>
+                  Apaixonado por fotografia e equipamentos audiovisuais. Possuo um home studio básico e interesse em produção musical. 
+                  Amante de câmeras e sempre em busca de aprimorar minhas habilidades no campo audiovisual.
+                </p>
+              </motion.div>
             </div>
-          </motion.div>
 
-          {/* Resumo Profissional */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-            className="mb-8"
-          >
-            <h3 className={`text-xl font-bold mb-3 ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
-              Resumo Profissional
-            </h3>
-            <p className={`${isDarkMode ? 'text-gray-300' : 'text-gray-600'} leading-relaxed`}>
-              Fotógrafo profissional com mais de 10 anos de experiência em fotografia de eventos, 
-              retratos e projetos comerciais. Especializado em capturar momentos únicos e contar 
-              histórias através da lente, com foco em qualidade técnica e criatividade artística.
-            </p>
-          </motion.div>
+            {/* Coluna direita - Foto */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              className="flex justify-center lg:justify-end"
+            >
+              <div className="relative group">
+                <div className={`w-80 h-80 lg:w-96 lg:h-96 rounded-2xl overflow-hidden shadow-2xl transition-all duration-500 group-hover:shadow-3xl group-hover:scale-105 ${isDarkMode ? 'bg-gray-800' : 'bg-gray-100'}`}>
+                  {biographyImages && biographyImages.length > 0 ? (
+                    <AnimatePresence mode="wait">
+                      <motion.img 
+                        key={currentBiographyIndex}
+                        src={biographyImages[currentBiographyIndex]} 
+                        alt="Ricardo Freschi" 
+                        className="w-full h-full object-cover"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.5 }}
+                        style={{
+                          imageRendering: 'high-quality',
+                          imageRendering: '-webkit-optimize-contrast'
+                        }}
+                        loading="lazy" />
+                    </AnimatePresence>
+                  ) : (
+                    <div className={`w-full h-full flex items-center justify-center ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                      <Camera className="w-16 h-16" />
+                    </div>
+                  )}
+                </div>
+              </div>
+            </motion.div>
+          </div>
 
-          {/* Experiência Profissional */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-            className="mb-8"
-          >
-            <h3 className={`text-xl font-bold mb-4 ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
+                  {/* Linha decorativa entre seções */}
+                  <div className="w-full h-px bg-gradient-to-r from-transparent via-pink-500/20 to-transparent mb-8"></div>
+                  
+                  {/* Experiência Profissional */}
+                  <motion.div
+                    initial={{ opacity: 0, y: 50 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.8, delay: 0.2 }}
+                    className="mb-8"
+                  >
+            <h3 className={`text-xl font-bold mb-4 bg-gradient-to-r ${isDarkMode ? 'from-white via-gray-300 to-white bg-clip-text text-transparent' : 'from-gray-800 via-gray-600 to-gray-800 bg-clip-text text-transparent'}`}>
               Experiência Profissional
             </h3>
             <div className="space-y-4">
-              <div className={`p-4 rounded-lg ${isDarkMode ? 'bg-gray-800/50' : 'bg-gray-50'}`}>
+              <div className={`p-4 rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-lg ${isDarkMode ? 'bg-gray-800/50 hover:bg-gray-800/70' : 'bg-gray-50 hover:bg-gray-100'}`}>
                 <h4 className={`font-semibold ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
-                  Fotógrafo Freelancer
+                  Editor de vídeo e Auxiliar de Estúdio
                 </h4>
                 <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-                  2015 - Presente
+                  Showcase. | 2024 - 2025
                 </p>
-                <p className={`mt-2 ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                  Desenvolvimento de projetos fotográficos diversos, incluindo eventos corporativos, 
-                  casamentos, ensaios fotográficos e projetos comerciais.
-                </p>
+                <ul className={`mt-2 space-y-1 ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                  <li>• Pós-produção de narração em audiodescrição. Ajustei pausas e equalização do áudio para que a audiodescrição fosse fluida e natural, sem interferir na experiência original do conteúdo.</li>
+                  <li>• Suporte técnico em gravações de estúdio. Configurei câmeras, iluminação e vídeo para garantir captação de alta qualidade dos intérpretes de Libras, minimizando retrabalho na pós-produção.</li>
+                  <li>• Colaboração com profissionais de acessibilidade. Trabalhei diretamente com roteiristas, locutores e intérpretes de Libras para alinhar o conteúdo às necessidades do público-alvo.</li>
+                </ul>
               </div>
-              <div className={`p-4 rounded-lg ${isDarkMode ? 'bg-gray-800/50' : 'bg-gray-50'}`}>
+              <div className={`p-4 rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-lg ${isDarkMode ? 'bg-gray-800/50 hover:bg-gray-800/70' : 'bg-gray-50 hover:bg-gray-100'}`}>
                 <h4 className={`font-semibold ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
-                  Fotógrafo - Estúdio XYZ
+                  Designer e Social Media
                 </h4>
                 <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-                  2012 - 2015
+                  Pandolfe Joias | 2019 - 2022
                 </p>
-                <p className={`mt-2 ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                  Responsável por sessões de fotos, edição e pós-produção. Trabalho em equipe 
-                  para desenvolvimento de campanhas publicitárias.
-                </p>
+                <ul className={`mt-2 space-y-1 ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                  <li>• Ampliei minha experiência com Adobe Photoshop para Instagram com artes promocionais</li>
+                  <li>• Desenvolvi minha experiência em grupo trabalhando em escritório</li>
+                </ul>
               </div>
             </div>
           </motion.div>
+
+          {/* Linha decorativa entre seções */}
+          <div className="w-full h-px bg-gradient-to-r from-transparent via-purple-500/20 to-transparent mb-8"></div>
 
           {/* Habilidades */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.5 }}
-            className="mb-8"
-          >
-            <h3 className={`text-xl font-bold mb-4 ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
-              Habilidades Técnicas
-            </h3>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-              {[
-                'Fotografia de Eventos',
-                'Retratos',
-                'Fotografia Comercial',
-                'Edição Digital',
-                'Lightroom',
-                'Photoshop',
-                'Fotografia de Casamentos',
-                'Ensaios Fotográficos',
-                'Pós-produção'
-              ].map((skill, index) => (
-                <span
-                  key={index}
-                  className={`px-3 py-2 rounded-full text-sm font-medium ${
-                    isDarkMode 
-                      ? 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/30' 
-                      : 'bg-indigo-100 text-indigo-700 border border-indigo-200'
-                  }`}
-                >
-                  {skill}
-                </span>
-              ))}
-            </div>
-          </motion.div>
-
-          {/* Educação */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -1180,36 +1311,171 @@ function ResumePage({ isDarkMode }) {
             className="mb-8"
           >
             <h3 className={`text-xl font-bold mb-4 ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
-              Educação
+              Habilidades Técnicas
             </h3>
-            <div className={`p-4 rounded-lg ${isDarkMode ? 'bg-gray-800/50' : 'bg-gray-50'}`}>
-              <h4 className={`font-semibold ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
-                Curso de Fotografia Profissional
-              </h4>
-              <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-                Escola de Fotografia ABC - 2010-2012
-              </p>
-              <p className={`mt-2 ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                Formação completa em técnicas fotográficas, iluminação, composição e pós-produção.
-              </p>
+            <div className="space-y-4">
+              <div>
+                <h4 className={`text-lg font-semibold mb-3 ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
+                  Programas
+                </h4>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                  {[
+                    { name: 'Adobe Photoshop', icon: Palette },
+                    { name: 'Adobe Premiere Pro', icon: Video },
+                    { name: 'Adobe Illustrator', icon: Image },
+                    { name: 'Adobe Lightroom', icon: Image },
+                    { name: 'REAPER', icon: Music },
+                    { name: 'Audacity', icon: Mic },
+                    { name: 'Studio One', icon: Music },
+                    { name: 'FL Studio', icon: Music },
+                    { name: 'Da Vinci Resolve', icon: Video }
+                  ].map((skill, index) => {
+                    const IconComponent = skill.icon
+                    return (
+                      <span
+                        key={index}
+                        className={`px-3 py-2 rounded-full text-sm font-medium flex items-center gap-2 transition-all duration-300 hover:scale-110 hover:shadow-md ${
+                          isDarkMode
+                            ? 'bg-gradient-to-r from-indigo-500/20 to-purple-500/20 text-indigo-300 border border-indigo-500/30 hover:from-indigo-500/30 hover:to-purple-500/30'
+                            : 'bg-gradient-to-r from-indigo-100 to-purple-100 text-indigo-700 border border-indigo-200 hover:from-indigo-200 hover:to-purple-200'
+                        }`}
+                      >
+                        <IconComponent className="w-4 h-4" />
+                        {skill.name}
+                      </span>
+                    )
+                  })}
+                </div>
+              </div>
+              
+              {/* Linha divisória sutil */}
+              <div className="w-full h-px bg-gradient-to-r from-transparent via-indigo-500/20 to-transparent my-4"></div>
+              
+              <div>
+                <h4 className={`text-lg font-semibold mb-3 ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
+                  Conhecimentos Específicos
+                </h4>
+                <div className="space-y-2">
+                  <div className={`p-3 rounded-lg ${isDarkMode ? 'bg-gray-800/30' : 'bg-gray-50'}`}>
+                    <p className={`font-medium ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
+                      Conhecimento Básico de Câmeras
+                    </p>
+                    <p className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                      Operação e configuração de câmeras para fotografia e filmagem.
+                    </p>
+                  </div>
+                  <div className={`p-3 rounded-lg ${isDarkMode ? 'bg-gray-800/30' : 'bg-gray-50'}`}>
+                    <p className={`font-medium ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
+                      Experiência em Home Studio
+                    </p>
+                    <p className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                      Configuração e uso de equipamentos básicos de produção musical.
+                    </p>
+                  </div>
+                  <div className={`p-3 rounded-lg ${isDarkMode ? 'bg-gray-800/30' : 'bg-gray-50'}`}>
+                    <p className={`font-medium ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
+                      Capacidade de Aprendizado Contínuo
+                    </p>
+                    <p className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                      Compromisso com o aprimoramento constante das habilidades e conhecimentos no campo audiovisual.
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
           </motion.div>
+
+          {/* Linha decorativa entre seções */}
+          <div className="w-full h-px bg-gradient-to-r from-transparent via-cyan-500/20 to-transparent mb-8"></div>
+
+          {/* Educação */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.7 }}
+            className="mb-8"
+          >
+            <h3 className={`text-xl font-bold mb-4 ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
+              Educação
+            </h3>
+            <div className="space-y-4">
+              <div className={`p-4 rounded-lg ${isDarkMode ? 'bg-gray-800/50' : 'bg-gray-50'}`}>
+                <h4 className={`font-semibold ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
+                  Universidade Cruzeiro do Sul
+                </h4>
+                <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                  Rádio, TV e Internet | 2024
+                </p>
+                <p className={`mt-2 ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                  Graduação em andamento com foco em produção audiovisual, comunicação e mídias digitais.
+                </p>
+              </div>
+              <div className={`p-4 rounded-lg ${isDarkMode ? 'bg-gray-800/50' : 'bg-gray-50'}`}>
+                <h4 className={`font-semibold ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
+                  Saga - School of Art
+                </h4>
+                <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                  Curso | 2016-2020
+                </p>
+                <p className={`mt-2 ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                  Formação em artes digitais, design e produção audiovisual.
+                </p>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Linha decorativa entre seções */}
+          <div className="w-full h-px bg-gradient-to-r from-transparent via-teal-500/20 to-transparent mb-8"></div>
+
+          {/* Idiomas */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.8 }}
+            className="mb-8"
+          >
+            <h3 className={`text-xl font-bold mb-4 ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
+              Idiomas
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className={`p-4 rounded-lg ${isDarkMode ? 'bg-gray-800/50' : 'bg-gray-50'}`}>
+                <h4 className={`font-semibold ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
+                  Português
+                </h4>
+                <p className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                  Nativo
+                </p>
+              </div>
+              <div className={`p-4 rounded-lg ${isDarkMode ? 'bg-gray-800/50' : 'bg-gray-50'}`}>
+                <h4 className={`font-semibold ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
+                  Inglês
+                </h4>
+                <p className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                  Avançado
+                </p>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Linha decorativa final */}
+          <div className="w-full h-px bg-gradient-to-r from-transparent via-orange-500/20 to-transparent mb-8"></div>
 
           {/* Botão de Download */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.7 }}
+            transition={{ duration: 0.6, delay: 0.9 }}
             className="text-center"
           >
             <button
               onClick={handleDownloadResume}
-              className={`inline-flex items-center px-8 py-4 rounded-lg text-lg font-medium transition-all duration-200 ${
+              className={`inline-flex items-center px-8 py-4 rounded-lg text-lg font-medium transition-all duration-300 hover:scale-105 hover:shadow-xl relative overflow-hidden group ${
                 isDarkMode 
-                  ? 'bg-white hover:bg-gray-200 text-gray-900' 
-                  : 'bg-gray-800 hover:bg-gray-700 text-white'
+                  ? 'bg-gradient-to-r from-white to-gray-200 hover:from-gray-200 hover:to-white text-gray-900'
+                  : 'bg-gradient-to-r from-gray-800 to-gray-700 hover:from-gray-700 hover:to-gray-800 text-white'
               }`}
             >
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
               <Camera className="w-5 h-5 mr-2" />
               Baixar Currículo PDF
             </button>
@@ -1226,7 +1492,7 @@ function App() {
   const [isDarkMode, setIsDarkMode] = useState(() => {
     // Verifica se há preferência salva no localStorage
     const savedTheme = localStorage.getItem('darkMode')
-    return savedTheme ? JSON.parse(savedTheme) : false
+    return savedTheme ? JSON.parse(savedTheme) : true
   })
   
   // Estado para imagens de fundo rotativas
@@ -1296,7 +1562,7 @@ function App() {
       case 'contato':
         return <ContactPage isDarkMode={isDarkMode} biographyImages={biographyImages} currentBiographyIndex={currentBiographyIndex} />
       case 'curriculo':
-        return <ResumePage isDarkMode={isDarkMode} />
+        return <ResumePage isDarkMode={isDarkMode} biographyImages={biographyImages} currentBiographyIndex={currentBiographyIndex} />
       default:
         return <HomePage setCurrentPage={handlePageChange} isDarkMode={isDarkMode} onImageClick={handleImageClick} />
     }
