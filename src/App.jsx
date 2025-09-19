@@ -75,7 +75,7 @@ function parseProjectTxt(rawText, filePath) {
 
 function importProjectTexts() {
   // Lê todos .txt em assets/projects
-  const projectTxtModules = import.meta.glob('./assets/projects/**/*.txt', { eager: true, as: 'raw' })
+  const projectTxtModules = import.meta.glob('./assets/projects/**/*.txt', { eager: true, query: '?raw', import: 'default' })
   const projects = []
   Object.entries(projectTxtModules).forEach(([path, raw]) => {
     try {
@@ -209,7 +209,7 @@ function Navigation({ currentPage, setCurrentPage, isDarkMode, toggleDarkMode })
           <div className="absolute left-1/2 -translate-x-1/2 flex items-center">
             <button
               onClick={() => setCurrentPage('home')}
-              className="p-1 rounded-full focus:outline-none focus:ring-2 focus:ring-white/30"
+              className="p-1 rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-white/30"
               aria-label="Ir para Home"
             >
               <Aperture className={`h-7 w-7 ${isDarkMode ? 'text-white' : 'text-gray-800'}`} />
@@ -239,7 +239,8 @@ function Navigation({ currentPage, setCurrentPage, isDarkMode, toggleDarkMode })
                 isDarkMode 
                   ? 'bg-gray-700 hover:bg-gray-600 text-yellow-400' 
                   : 'bg-gray-100 hover:bg-gray-200 text-gray-600'
-              }`}
+              } focus:outline-none focus-visible:ring-2 focus-visible:ring-white/30`}
+              aria-label={isDarkMode ? 'Ativar modo claro' : 'Ativar modo escuro'}
             >
               {isDarkMode ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
             </button>
@@ -254,7 +255,8 @@ function Navigation({ currentPage, setCurrentPage, isDarkMode, toggleDarkMode })
                 isDarkMode 
                   ? 'bg-gray-700 hover:bg-gray-600 text-yellow-400' 
                   : 'bg-gray-100 hover:bg-gray-200 text-gray-600'
-              }`}
+              } focus:outline-none focus-visible:ring-2 focus-visible:ring-white/30`}
+              aria-label={isDarkMode ? 'Ativar modo claro' : 'Ativar modo escuro'}
             >
               {isDarkMode ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
             </button>
@@ -264,6 +266,9 @@ function Navigation({ currentPage, setCurrentPage, isDarkMode, toggleDarkMode })
           <div className="md:hidden flex items-center ml-auto">
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
+              aria-expanded={isMenuOpen}
+              aria-controls="mobile-menu"
+              aria-label={isMenuOpen ? 'Fechar menu' : 'Abrir menu'}
             >
               {isMenuOpen ? 
                 <X className={`h-6 w-6 ${isDarkMode ? 'text-white' : 'text-gray-800'}`} /> : 
@@ -286,6 +291,7 @@ function Navigation({ currentPage, setCurrentPage, isDarkMode, toggleDarkMode })
                   ? 'border-gray-700 bg-gray-900/95' 
                   : 'border-gray-200 bg-white/95'
               }`}
+              id="mobile-menu"
             >
               <div className="py-2">
                 {['home', 'galeria', 'contato', 'projetos', 'curriculo'].map((page, index) => (
@@ -411,10 +417,6 @@ function HomePage({ setCurrentPage, isDarkMode, onImageClick, backgroundImages, 
                   src={image.src}
                   alt={image.alt}
                   className="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110"
-                  style={{ 
-                    imageRendering: 'high-quality',
-                    imageRendering: '-webkit-optimize-contrast'
-                  }}
                   loading="lazy"
                 />
                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all duration-300 flex items-center justify-center">
@@ -582,10 +584,6 @@ function GalleryPage({ isDarkMode, selectedImage }) {
                   src={image.src} 
                   alt={image.alt}
                   className="w-full h-80 object-cover transition-transform duration-500 group-hover:scale-110"
-                  style={{ 
-                    imageRendering: 'high-quality',
-                    imageRendering: '-webkit-optimize-contrast'
-                  }}
                   loading="lazy"
                 />
                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all duration-300 flex items-center justify-center">
@@ -602,10 +600,10 @@ function GalleryPage({ isDarkMode, selectedImage }) {
         {totalPages > 1 && (
           <div className="flex justify-center items-center mt-12 space-x-8">
             {/* Previous Arrow */}
-              <button
+                  <button
               onClick={goToPreviousPage}
               disabled={currentPage === 1}
-              className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-all duration-200 ${
+                    className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 ${
                 currentPage === 1
                   ? (isDarkMode 
                       ? 'bg-gray-700 text-gray-500 cursor-not-allowed' 
@@ -614,6 +612,7 @@ function GalleryPage({ isDarkMode, selectedImage }) {
                       ? 'bg-gray-700 text-white hover:bg-gray-600' 
                       : 'bg-gray-200 text-gray-700 hover:bg-gray-300')
               }`}
+                    aria-label="Página anterior"
             >
               <ChevronLeft className="h-5 w-5" />
               <span className="hidden sm:inline">Anterior</span>
@@ -625,10 +624,10 @@ function GalleryPage({ isDarkMode, selectedImage }) {
             </div>
 
             {/* Next Arrow */}
-              <button
+                  <button
               onClick={goToNextPage}
               disabled={currentPage === totalPages}
-              className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-all duration-200 ${
+                    className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 ${
                 currentPage === totalPages
                   ? (isDarkMode 
                       ? 'bg-gray-700 text-gray-500 cursor-not-allowed' 
@@ -637,6 +636,7 @@ function GalleryPage({ isDarkMode, selectedImage }) {
                       ? 'bg-gray-700 text-white hover:bg-gray-600' 
                       : 'bg-gray-200 text-gray-700 hover:bg-gray-300')
               }`}
+                    aria-label="Próxima página"
             >
               <span className="hidden sm:inline">Próxima</span>
               <ChevronRight className="h-5 w-5" />
@@ -661,10 +661,6 @@ function GalleryPage({ isDarkMode, selectedImage }) {
                 src={selectedImageForLightbox.src}
                 alt={selectedImageForLightbox.alt}
                 className="max-w-[95vw] max-h-[95vh] w-auto h-auto object-contain"
-                style={{ 
-                  imageRendering: 'high-quality',
-                  imageRendering: '-webkit-optimize-contrast'
-                }}
                 onClick={(e) => e.stopPropagation()}
               />
               <button
@@ -727,6 +723,22 @@ function ProjectsPage({ isDarkMode }) {
   const headerText = isDarkMode ? 'text-white' : 'text-indigo-900'
   const subText = isDarkMode ? 'text-indigo-200' : 'text-indigo-700'
 
+  // Filtros simples por tipo
+  const [filter, setFilter] = useState('todos') // 'todos' | 'youtube' | 'tiktok' | 'outros'
+
+  const filteredProjects = projects.filter(p => {
+    const isTikTok = p.videoUrl && p.videoUrl.includes('tiktok.com')
+    const hasYouTube = Boolean(getYouTubeId(p.videoUrl))
+    if (filter === 'todos') return true
+    if (filter === 'tiktok') return isTikTok
+    if (filter === 'youtube') return hasYouTube
+    if (filter === 'outros') return !isTikTok && !hasYouTube
+    return true
+  })
+
+  // Skeletons para primeira renderização
+  const skeletonArray = new Array(6).fill(0)
+
   return (
     <div className={`min-h-screen py-20 px-4 transition-colors duration-300`} style={themedBgStyle}>
       <div className="max-w-7xl mx-auto">
@@ -744,8 +756,32 @@ function ProjectsPage({ isDarkMode }) {
           </p>
         </motion.div>
 
+        {/* Controles de filtro */}
+        <div className="flex flex-wrap justify-center gap-3 mb-10">
+          {[
+            { key: 'todos', label: 'Todos' },
+            { key: 'youtube', label: 'YouTube' },
+            { key: 'tiktok', label: 'TikTok' },
+            { key: 'outros', label: 'Outros' }
+          ].map(({ key, label }) => (
+            <button
+              key={key}
+              type="button"
+              onClick={() => setFilter(key)}
+              className={`px-3 py-1.5 rounded-full text-sm font-medium border transition-colors ${
+                filter === key
+                  ? (isDarkMode ? 'bg-indigo-600 text-white border-indigo-500' : 'bg-indigo-600 text-white border-indigo-600')
+                  : (isDarkMode ? 'text-indigo-200 border-indigo-700 hover:bg-indigo-900/40' : 'text-indigo-700 border-indigo-200 hover:bg-indigo-50')
+              }`}
+              aria-pressed={filter === key}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {projects.map((project, index) => {
+          {(filteredProjects.length ? filteredProjects : projects).map((project, index) => {
             const ytId = getYouTubeId(project.videoUrl)
             const hasYouTube = Boolean(ytId)
             const isTikTok = Boolean(project.videoUrl && project.videoUrl.includes('tiktok.com'))
@@ -840,7 +876,8 @@ function ProjectsPage({ isDarkMode }) {
                         <button
                           type="button"
                           onClick={() => setActiveVideo({ title: project.title, ytId, url: project.videoUrl })}
-                          className={`${accentBtn} rounded-lg py-2 px-3 text-sm font-medium transition-colors`}
+                          className={`${accentBtn} rounded-lg py-2 px-3 text-sm font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40`}
+                          aria-label={`Assistir ${project.title} na página`}
                         >
                           Assistir na página
                         </button>
@@ -849,7 +886,8 @@ function ProjectsPage({ isDarkMode }) {
                         href={project.videoUrl || project.videoFile}
                         target="_blank"
                         rel="noreferrer"
-                        className={`${neutralBtn} rounded-lg py-2 px-3 text-sm font-medium text-center transition-colors`}
+                        className={`${neutralBtn} rounded-lg py-2 px-3 text-sm font-medium text-center transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-300`}
+                        aria-label={`Abrir ${project.title} em nova aba`}
                       >
                         {isTikTok ? 'Abrir no TikTok' : hasYouTube ? 'Abrir no YouTube' : 'Abrir projeto'}
                       </a>
@@ -859,6 +897,17 @@ function ProjectsPage({ isDarkMode }) {
               </motion.div>
             )
           })}
+          {/* Skeletons quando a lista filtrada fica vazia por um instante */}
+          {filteredProjects.length === 0 && projects.length > 0 && skeletonArray.map((_, i) => (
+            <div key={`s-${i}`} className={`rounded-2xl overflow-hidden shadow-xl ${cardClasses}`} aria-hidden="true">
+              <div className="aspect-video bg-gradient-to-r from-slate-800/40 to-slate-700/30 animate-pulse" />
+              <div className="p-6 space-y-3">
+                <div className="h-5 w-2/3 bg-slate-600/40 rounded animate-pulse" />
+                <div className="h-4 w-full bg-slate-600/30 rounded animate-pulse" />
+                <div className="h-4 w-5/6 bg-slate-600/30 rounded animate-pulse" />
+              </div>
+            </div>
+          ))}
         </div>
 
         {/* Modal Player */}
@@ -890,7 +939,8 @@ function ProjectsPage({ isDarkMode }) {
                 </div>
                 <button
                   onClick={() => setActiveVideo(null)}
-                  className="absolute -top-10 right-0 text-white hover:text-gray-300 bg-black/50 rounded-full p-2 transition-colors duration-200"
+                  className="absolute -top-10 right-0 text-white hover:text-gray-300 bg-black/50 rounded-full p-2 transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
+                  aria-label="Fechar player"
                 >
                   <X className="h-8 w-8" />
                 </button>
@@ -1043,6 +1093,14 @@ function ContactPage({ isDarkMode, biographyImages, currentBiographyIndex }) {
 
 // Componente da página de currículo
 function ResumePage({ isDarkMode, biographyImages, currentBiographyIndex }) {
+  // Carrega dados do currículo via JSON para facilitar futuras edições
+  const [resumeData, setResumeData] = useState(null)
+
+  useEffect(() => {
+    import('./data/resume.json')
+      .then((mod) => setResumeData(mod.default || mod))
+      .catch(() => setResumeData(null))
+  }, [])
   const [emailCopied, setEmailCopied] = useState(false)
   
   const themedBgStyle = isDarkMode 
@@ -1113,7 +1171,7 @@ function ResumePage({ isDarkMode, biographyImages, currentBiographyIndex }) {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, delay: 0.7 }}
                   >
-                    RICARDO
+                    {resumeData?.name?.split(' ')[0] || 'RICARDO'}
                   </motion.span>
                   <motion.span
                     initial={{ opacity: 0, y: 20 }}
@@ -1121,11 +1179,11 @@ function ResumePage({ isDarkMode, biographyImages, currentBiographyIndex }) {
                     transition={{ duration: 0.8, delay: 1 }}
                     className="ml-2"
                   >
-                    FRESCHI
+                    {resumeData?.name?.split(' ').slice(1).join(' ') || 'FRESCHI'}
                   </motion.span>
                 </motion.h2>
                 <p className={`text-lg mb-2 ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                  Estudante de Rádio, TV e Internet
+                  {resumeData?.title || 'Estudante de Rádio, TV e Internet'}
                 </p>
                 <div className="space-y-2">
                   <motion.div 
@@ -1142,7 +1200,7 @@ function ResumePage({ isDarkMode, biographyImages, currentBiographyIndex }) {
                     >
                       <Mail className="w-4 h-4 mr-2 text-blue-400" />
                       <span className={`${isDarkMode ? 'text-gray-300' : 'text-gray-600'} hover:text-blue-400 transition-colors duration-200`}>
-                        ricardodias2004@gmail.com
+                        {resumeData?.email || 'ricardodias2004@gmail.com'}
                       </span>
                     </motion.div>
                     <button
@@ -1162,7 +1220,7 @@ function ResumePage({ isDarkMode, biographyImages, currentBiographyIndex }) {
                   <div className={`flex items-center justify-between ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
                     <div className="flex items-center">
                       <Phone className="w-4 h-4 mr-2 text-green-400" />
-                      (11) 95779-8732
+                      {resumeData?.phone ? resumeData.phone.replace('+55 ', '') : '(11) 95779-8732'}
                     </div>
                     <motion.button
                       onClick={handleCall}
@@ -1223,7 +1281,7 @@ function ResumePage({ isDarkMode, biographyImages, currentBiographyIndex }) {
                   </div>
                   <p className={`flex items-center ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
                     <span className="w-4 h-4 mr-2 text-red-400">📍</span>
-                    Rua Barão de Tatuí, 594 - Vila Buarque
+                    {resumeData?.address || 'Rua Barão de Tatuí, 594 - Vila Buarque'}
                   </p>
                 </div>
               </motion.div>
@@ -1238,8 +1296,7 @@ function ResumePage({ isDarkMode, biographyImages, currentBiographyIndex }) {
                   Resumo Profissional
                 </h3>
                 <p className={`${isDarkMode ? 'text-gray-300' : 'text-gray-600'} leading-relaxed`}>
-                  Apaixonado por fotografia e equipamentos audiovisuais. Possuo um home studio básico e interesse em produção musical. 
-                  Amante de câmeras e sempre em busca de aprimorar minhas habilidades no campo audiovisual.
+                  {resumeData?.summary || 'Apaixonado por fotografia e equipamentos audiovisuais.'}
                 </p>
               </motion.div>
             </div>
@@ -1264,10 +1321,6 @@ function ResumePage({ isDarkMode, biographyImages, currentBiographyIndex }) {
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.5 }}
-                        style={{
-                          imageRendering: 'high-quality',
-                          imageRendering: '-webkit-optimize-contrast'
-                        }}
                         loading="lazy" />
                     </AnimatePresence>
                   ) : (
@@ -1295,31 +1348,21 @@ function ResumePage({ isDarkMode, biographyImages, currentBiographyIndex }) {
               Experiência Profissional
             </h3>
             <div className="space-y-4">
-              <div className={`p-4 rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-lg ${isDarkMode ? 'bg-gray-800/50 hover:bg-gray-800/70' : 'bg-gray-50 hover:bg-gray-100'}`}>
-                <h4 className={`font-semibold ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
-                  Editor de vídeo e Auxiliar de Estúdio
-                </h4>
-                <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-                  Showcase. | 2024 - 2025
-                </p>
-                <ul className={`mt-2 space-y-1 ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                  <li>• Pós-produção de narração em audiodescrição. Ajustei pausas e equalização do áudio para que a audiodescrição fosse fluida e natural, sem interferir na experiência original do conteúdo.</li>
-                  <li>• Suporte técnico em gravações de estúdio. Configurei câmeras, iluminação e vídeo para garantir captação de alta qualidade dos intérpretes de Libras, minimizando retrabalho na pós-produção.</li>
-                  <li>• Colaboração com profissionais de acessibilidade. Trabalhei diretamente com roteiristas, locutores e intérpretes de Libras para alinhar o conteúdo às necessidades do público-alvo.</li>
-                </ul>
-              </div>
-              <div className={`p-4 rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-lg ${isDarkMode ? 'bg-gray-800/50 hover:bg-gray-800/70' : 'bg-gray-50 hover:bg-gray-100'}`}>
-                <h4 className={`font-semibold ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
-                  Designer e Social Media
-                </h4>
-                <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-                  Pandolfe Joias | 2019 - 2022
-                </p>
-                <ul className={`mt-2 space-y-1 ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                  <li>• Ampliei minha experiência com Adobe Photoshop para Instagram com artes promocionais</li>
-                  <li>• Desenvolvi minha experiência em grupo trabalhando em escritório</li>
-                </ul>
-              </div>
+              {(resumeData?.experience || []).map((exp, idx) => (
+                <div key={idx} className={`p-4 rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-lg ${isDarkMode ? 'bg-gray-800/50 hover:bg-gray-800/70' : 'bg-gray-50 hover:bg-gray-100'}`}>
+                  <h4 className={`font-semibold ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
+                    {exp.role}
+                  </h4>
+                  <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                    {exp.company} | {exp.period}
+                  </p>
+                  <ul className={`mt-2 space-y-1 ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                    {(exp.items || []).map((it, i) => (
+                      <li key={i}>• {it}</li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
             </div>
           </motion.div>
 
@@ -1342,18 +1385,11 @@ function ResumePage({ isDarkMode, biographyImages, currentBiographyIndex }) {
                   Programas
                 </h4>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                  {[
-                    { name: 'Adobe Photoshop', icon: Palette },
-                    { name: 'Adobe Premiere Pro', icon: Video },
-                    { name: 'Adobe Illustrator', icon: Image },
-                    { name: 'Adobe Lightroom', icon: Image },
-                    { name: 'REAPER', icon: Music },
-                    { name: 'Audacity', icon: Mic },
-                    { name: 'Studio One', icon: Music },
-                    { name: 'FL Studio', icon: Music },
-                    { name: 'Da Vinci Resolve', icon: Video }
-                  ].map((skill, index) => {
-                    const IconComponent = skill.icon
+                  {(resumeData?.skillsPrograms || [
+                    'Adobe Photoshop','Adobe Premiere Pro','Adobe Illustrator','Adobe Lightroom','REAPER','Audacity','Studio One','FL Studio','Da Vinci Resolve'
+                  ]).map((name, index) => {
+                    const iconMap = { 'Adobe Photoshop': Palette, 'Adobe Premiere Pro': Video, 'Adobe Illustrator': Image, 'Adobe Lightroom': Image, 'REAPER': Music, 'Audacity': Mic, 'Studio One': Music, 'FL Studio': Music, 'Da Vinci Resolve': Video }
+                    const IconCmp = iconMap[name] || Palette
                     return (
                       <span
                         key={index}
@@ -1363,8 +1399,8 @@ function ResumePage({ isDarkMode, biographyImages, currentBiographyIndex }) {
                             : 'bg-gradient-to-r from-indigo-100 to-purple-100 text-indigo-700 border border-indigo-200 hover:from-indigo-200 hover:to-purple-200'
                         }`}
                       >
-                        <IconComponent className="w-4 h-4" />
-                        {skill.name}
+                        <IconCmp className="w-4 h-4" />
+                        {name}
                       </span>
                     )
                   })}
@@ -1379,30 +1415,16 @@ function ResumePage({ isDarkMode, biographyImages, currentBiographyIndex }) {
                   Conhecimentos Específicos
                 </h4>
                 <div className="space-y-2">
-                  <div className={`p-3 rounded-lg ${isDarkMode ? 'bg-gray-800/30' : 'bg-gray-50'}`}>
-                    <p className={`font-medium ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
-                      Conhecimento Básico de Câmeras
-                    </p>
-                    <p className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                      Operação e configuração de câmeras para fotografia e filmagem.
-                    </p>
-                  </div>
-                  <div className={`p-3 rounded-lg ${isDarkMode ? 'bg-gray-800/30' : 'bg-gray-50'}`}>
-                    <p className={`font-medium ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
-                      Experiência em Home Studio
-                    </p>
-                    <p className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                      Configuração e uso de equipamentos básicos de produção musical.
-                    </p>
-                  </div>
-                  <div className={`p-3 rounded-lg ${isDarkMode ? 'bg-gray-800/30' : 'bg-gray-50'}`}>
-                    <p className={`font-medium ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
-                      Capacidade de Aprendizado Contínuo
-                    </p>
-                    <p className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                      Compromisso com o aprimoramento constante das habilidades e conhecimentos no campo audiovisual.
-                    </p>
-                  </div>
+                  {(resumeData?.skillsSpecific || []).map((s, i) => (
+                    <div key={i} className={`p-3 rounded-lg ${isDarkMode ? 'bg-gray-800/30' : 'bg-gray-50'}`}>
+                      <p className={`font-medium ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
+                        {s.title}
+                      </p>
+                      <p className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                        {s.desc}
+                      </p>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
@@ -1422,28 +1444,19 @@ function ResumePage({ isDarkMode, biographyImages, currentBiographyIndex }) {
               Educação
             </h3>
             <div className="space-y-4">
-              <div className={`p-4 rounded-lg ${isDarkMode ? 'bg-gray-800/50' : 'bg-gray-50'}`}>
-                <h4 className={`font-semibold ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
-                  Universidade Cruzeiro do Sul
-                </h4>
-                <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-                  Rádio, TV e Internet | 2024
-                </p>
-                <p className={`mt-2 ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                  Graduação em andamento com foco em produção audiovisual, comunicação e mídias digitais.
-                </p>
-              </div>
-              <div className={`p-4 rounded-lg ${isDarkMode ? 'bg-gray-800/50' : 'bg-gray-50'}`}>
-                <h4 className={`font-semibold ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
-                  Saga - School of Art
-                </h4>
-                <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-                  Curso | 2016-2020
-                </p>
-                <p className={`mt-2 ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                  Formação em artes digitais, design e produção audiovisual.
-                </p>
-              </div>
+              {(resumeData?.education || []).map((ed, i) => (
+                <div key={i} className={`p-4 rounded-lg ${isDarkMode ? 'bg-gray-800/50' : 'bg-gray-50'}`}>
+                  <h4 className={`font-semibold ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
+                    {ed.institution}
+                  </h4>
+                  <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                    {ed.course} | {ed.year}
+                  </p>
+                  <p className={`mt-2 ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                    {ed.desc}
+                  </p>
+                </div>
+              ))}
             </div>
           </motion.div>
 
@@ -1573,6 +1586,12 @@ function App() {
     }
     setCurrentPage(page)
   }
+
+  // Garante que ao trocar de página a janela volte ao topo
+  useEffect(() => {
+    // Usa behavior suave para UX melhor; em navegadores antigos cai como instantâneo
+    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
+  }, [currentPage])
 
   const renderPage = () => {
     switch (currentPage) {
