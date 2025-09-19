@@ -1180,17 +1180,17 @@ function ResumePage({ isDarkMode, biographyImages, currentBiographyIndex }) {
                       <PhoneCall className="w-4 h-4" />
                     </motion.button>
                   </div>
-                  <div className={`flex items-center gap-4 ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                    <div className="flex items-center">
+                  <div className={`flex items-center gap-2 flex-wrap ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                    <div className="flex items-center shrink-0">
                       <Instagram className="w-4 h-4 mr-2 text-pink-400" />
                       <span className="text-sm font-medium">Redes Sociais</span>
                     </div>
-                    <div className="flex gap-2">
+                    <div className="flex gap-2 flex-1 min-w-0 justify-end flex-wrap">
                       <motion.a 
                         href="https://instagram.com/freschi.raw" 
                         target="_blank" 
                         rel="noopener noreferrer"
-                        className={`px-3 py-1 rounded-full text-sm font-medium transition-all duration-300 hover:scale-105 flex items-center gap-2 ${
+                        className={`px-2 py-1 sm:px-3 rounded-full text-xs sm:text-sm font-medium transition-all duration-300 hover:scale-105 flex items-center gap-2 whitespace-nowrap ${
                           isDarkMode
                             ? 'bg-gradient-to-r from-pink-500/20 via-purple-500/20 to-orange-500/20 text-pink-300 border border-pink-500/30 hover:from-pink-500/30 hover:via-purple-500/30 hover:to-orange-500/30 hover:border-pink-400/50'
                             : 'bg-gradient-to-r from-pink-500/20 via-purple-500/20 to-orange-500/20 text-pink-700 border border-pink-500/30 hover:from-pink-500/30 hover:via-purple-500/30 hover:to-orange-500/30 hover:border-pink-400/50'
@@ -1207,7 +1207,7 @@ function ResumePage({ isDarkMode, biographyImages, currentBiographyIndex }) {
                         href="https://instagram.com/freschi.jpg" 
                         target="_blank" 
                         rel="noopener noreferrer"
-                        className={`px-3 py-1 rounded-full text-sm font-medium transition-all duration-300 hover:scale-105 flex items-center gap-2 ${
+                        className={`px-2 py-1 sm:px-3 rounded-full text-xs sm:text-sm font-medium transition-all duration-300 hover:scale-105 flex items-center gap-2 whitespace-nowrap ${
                           isDarkMode
                             ? 'bg-gradient-to-r from-pink-500/20 via-purple-500/20 to-orange-500/20 text-pink-300 border border-pink-500/30 hover:from-pink-500/30 hover:via-purple-500/30 hover:to-orange-500/30 hover:border-pink-400/50'
                             : 'bg-gradient-to-r from-pink-500/20 via-purple-500/20 to-orange-500/20 text-pink-700 border border-pink-500/30 hover:from-pink-500/30 hover:via-purple-500/30 hover:to-orange-500/30 hover:border-pink-400/50'
